@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <script>
+            let arr = [1,2,3,4,5,6,7,7,8,9];
+            let set = new Set();
+            let arrSingal = new Set(arr);
+            arrSingal.delete(2)
+            console.log(arrSingal);
+
+            set.add(1)
+            set.add("1a")
+            set.add(4)
+            console.log(set)    
+            set.forEach((item,index)=>{
+                console.log(item,index)
+            })
+
+            let maps = new Map([['title','hello world'],['year','2018']])
+            console.log(maps.has("title"));
+            console.log(maps.size);
+            maps.forEach((value,key)=>{
+                console.log(value,key)
+            })
+        </script>
+</body>
+</html>

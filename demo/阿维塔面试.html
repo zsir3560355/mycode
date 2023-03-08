@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="one"></div>
+      <div class="two"></div>
+      <div class="three"></div>
+    </div>
+    <style>
+      .wrap {
+        width: 100%;
+        height: 400px;
+        display: flex;
+      }
+      .one {
+        height: 100%;
+        flex: 0 1 100px;
+        background: red;
+      }
+      .two {
+        height: 100%;
+        flex: 1;
+        background: yellow;
+      }
+      .three {
+        height: 100%;
+        flex: 2;
+        background: blue;
+      }
+    </style>
+    <script>
+      const data = [
+        {
+          id: 1,
+          name: "test1",
+          pid: 1,
+          children: [
+            {
+              id: 4,
+              name: "test4",
+              pid: 4,
+              children: [
+                { id: 5, name: "test5", pid: 5 },
+                { id: 6, name: "test6", pid: 6 },
+              ],
+            },
+          ],
+        },
+        {
+          id: 2,
+          name: "test2",
+          pid: 2,
+          children: [{ id: 21, name: "test21" }],
+        },
+        {
+          id: 3,
+          name: "test3",
+          pid: 3,
+          children: [{ id: 31, name: "test31" }],
+        },
+      ];
+      console.log(flatData(data));
+
+      function flatData(arr) {
+        return arr.reduce((prev, cur) => {
+          let obj = {
+            ...cur,
+          };
+          prev.push(cur);
+          if (cur?.children?.length > 0) {
+            prev.push(...flatData(cur.children));
+          }
+          return prev;
+        }, []);
+      }
+
+      let arrs = [
+        { id: 1, name: "test1", pid: 0 },
+        { id: 2, name: "test2", pid: 1 },
+        { id: 3, name: "test3", pid: 1 },
+        { id: 4, name: "test4", pid: 2 },
+        { id: 5, name: "test5", pid: 2 },
+        { id: 6, name: "test6", pid: 3 },
+      ];
+
+      function getChildren(arr, result, pid) {
+        for (let item of arr) {
+          if (item.pid === pid) {
+            let newItem = { ...item, children: [] };
+            result.push(newItem);
+            getChildren(arr, newItem.children, item.id);
+          }
+        }
+      }
+
+      // 递归方式数组转换成树形结构
+      const arrayToTree = (data, pid) => {
+        const result = [];
+        getChildren(data, result, pid);
+        return result;
+      };
+      function nest(arr, pid) {
+        return arr
+          .filter((item) => item.pid === pid)
+          .map((item) => ({ ...item, children: nest(arr, item.id) }));
+      }
+      // 非递归方式---map
+      function arrToTreeMap(arrs) {
+        let res = [];
+        let itemMap = {};
+        for (const item of arrs) {
+          itemMap[item.id] = { ...item, children: [] };
+        }
+        for (const item of arrs) {
+          const id = item.id;
+          const pid = item.pid;
+          const treeItem = itemMap[id];
+          if (pid === 0) {
+            res.push(treeItem);
+          } else {
+            if (!itemMap[pid]) {
+              itemMap[pid] = {
+                children: [],
+              };
+            }
+            itemMap[pid].children.push(treeItem);
+          }
+        }
+        return res;
+      }
+      // console.log(arrToTreeMap(arrs, 0));
+      // console.log(nest(arrs,0))
+
+      // 寻找ID==11的item的name
+      var datas = [
+        {
+          id: 1,
+          name: "家电",
+          goods: [
+            {
+              id: 11,
+              gname: "冰箱",
+              goods: [
+                {
+                  id: 111,
+                  gname: "海尔冰箱",
+                },
+                {
+                  id: 112,
+                  gname: "小天鹅冰箱",
+                },
+              ],
+            },
+            {
+              id: 12,
+              gname: "洗衣机",
+            },
+          ],
+        },
+        {
+          id: 2,
+          name: "服饰",
+        },
+      ];
+      function getItemName(arr, id) {
+        return arr.reduce((result, cur) => {
+          if (cur.id == id) {
+            let obj = {
+              name: cur.name || cur.gname,
+              id: cur.id,
+            };
+            result.push(obj);
+          }
+          if (cur.goods && cur.goods.length > 0) {
+            result.push(...getItemName(cur.goods, id));
+          }
+          return result;
+        }, []);
+      }
+
+      function getIDValue(json, id) {
+        return json.reduce((prev, cur) => {
+          if (cur.id == id) {
+            let obj = {
+              name: cur.name || cur.gname,
+              id: cur.id,
+            };
+            prev.push(obj);
+          }
+          if (cur.goods && cur.goods.length > 0) {
+            prev.push(...getIDValue(cur.goods, id));
+          }
+          return prev;
+        }, []);
+      }
+      console.log(getItemName(datas, 112)); //得到服饰
+    </script>
+  </body>
+</html>

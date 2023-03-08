@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    .div {
+      height: 2000px;
+    }
+
+    p {
+      height: 500px;
+      background: red;
+    }
+    .show-wrap {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+      overflow: auto;
+    }
+    .show {
+      flex: 1 0 700px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+
+  <body>
+    <div class="div"></div>
+    <div class="show-wrap">
+      <div class="show">我出现啦</div>
+      <div class="show">我出现啦</div>
+      <div class="show">我出现啦</div>
+      <div class="show">我出现啦</div>
+      <div class="show">我出现啦</div>
+    </div>
+    <p id="p">我出现啦</p>
+
+    <!-- 通过元素位置关系方法-->
+    <script>
+      // function isContain(dom) {
+      //     // 获取可视窗口的盖度。
+      //     const screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+      //     // 获取滚动条滚动的高度
+      //     const scrollTop = document.documentElement.scrollTop;
+      //     // 获取元素偏移的高度。就是距离可视窗口的偏移量。
+      //     const offsetTop = dom.offsetTop;
+      //     console.log("screenHeight=>",screenHeight,"scrollTop=>",scrollTop,"offsetTop=>",offsetTop);
+      //     return offsetTop - scrollTop <= screenHeight;
+      // }
+      // const p = document.getElementById("p");
+      // window.onscroll = () => {
+      //     if (isContain(p)) {
+      //         document.body.style.backgroundColor = 'blue'
+      //     } else {
+      //         document.body.style.backgroundColor = 'green'
+      //     }
+      // }
+
+      // function handle(){
+      //     if (isContain(p)) {
+      //         document.body.style.backgroundColor = 'blue'
+      //     } else {
+      //         document.body.style.backgroundColor = 'green'
+      //     }
+      // }
+      // const throttle = (fn,delay) => {
+      //         let lastTime = 0;
+      //         return (...args)=>{
+      //             let nowTime = Date.now();
+      //             if(nowTime-lastTime >delay){
+      //                 fn.call(this,args);
+      //                 lastTime = nowTime
+      //             }
+      //         }
+      //     }
+      // window.addEventListener("scroll",throttle(handle,1000))
+    </script>
+
+    <!-- 通过 getBoundingClientRect方法-->
+    <!-- <script>
+        // 只有当子元素全部出现在父元素中时，才会返回true。
+        function isContain(dom) {
+            const totalHeight = window.innerHeight || document.documentElement.clientHeight;
+            const totalWidth = window.innerWidth || document.documentElement.clientWidth;
+            // 当滚动条滚动时，top, left, bottom, right时刻会发生改变。
+            const { top, right, bottom, left } = dom.getBoundingClientRect();
+            console.log(top, right, bottom, left)
+            return (top >= 0 && left >= 0 && right <= totalWidth && bottom <= totalHeight);
+        }
+
+        const p = document.getElementById("p");
+        window.onscroll = () => {
+            if (isContain(p)) {
+                document.body.style.backgroundColor = 'blue'
+            } else {
+                document.body.style.backgroundColor = 'green'
+            }
+        }
+    </script> -->
+
+    <!-- 通过new IntersectionObserver();  -->
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((item) => {
+            item.target.style.background = "black";
+            item.target.style.color = "#fff";
+            console.log("item.isIntersecting=>", item);
+          });
+        },
+        { threshold: 0.2 }
+      );
+      const p = document.getElementById("p");
+      const show = document.getElementsByClassName("show");
+
+      function query(selector) {
+        return Array.from(document.querySelectorAll(selector));
+      }
+      query(".show").forEach((item) => {
+        observer.observe(item);
+      });
+      console.log(show);
+    </script>
+  </body>
+</html>

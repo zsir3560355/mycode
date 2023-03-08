@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <script>
+            let Arr = [
+                 0,
+                 [1,2,3,4,5],
+                 ['1','a','c','f'],
+                 ["fuck"],
+                 "aa"
+            ]
+            // 数组扁平化
+            function flatter(arr){
+                return arr.reduce((prev,cur)=>{
+                    return prev.concat(Array.isArray(cur)? flatter(cur) : cur)
+                },[])
+            }
+            console.log(flatter(Arr))
+            let a = [11,1,1,1,11,11,2,2,22,4,5,85,454,45,211,14];
+            let b = [ ...new Set(a)];
+            console.log(b)
+            
+            let cc = [...new Set(a)]
+            let aaa =  a.reduce((prev,cur)=>{
+                prev.indexOf(cur) == -1 && prev.push(cur);
+                return prev
+            },[])
+
+            // 数组去重
+            const debounce  = (fn,delay)=>{
+                let timer = null;
+                return (...args)=>{
+                    clearInterval(timer)
+                    timer = setInterval(()=>{
+                        fn.call(this,args)
+                    },delay)
+                }
+            }
+            
+            const debounceOne = (fn,delay)=>{
+              let timer = null;
+              return (...args)=>{
+                timer && clearInterval(timer)
+                timer = setInterval(()=>{
+                  fn.call(this,args)
+                },delay)
+              }
+            }
+            
+            const throttle = (fn,delay) => {
+                let lastTime = 0;
+                return (...args)=>{
+                    let nowTime = Date.now();
+                    console.log('lastTime=>',lastTime,'nowTime=>',nowTime);
+                    if(nowTime-lastTime >delay){
+                        fn.call(this,args);
+                        lastTime = nowTime
+                    }
+                }
+            }
+            //  防抖
+            window.addEventListener("resize",throttle(handle,2000))
+
+            function handle(){
+                console.log("防抖函数触发 了")
+            }
+           
+            // window.onresize = function(){
+            //     console.log("222")
+            // }
+
+            function handle(){
+                console.log("防抖函数触发 了")
+            }
+            
+            
+            // 深拷贝函数实现
+            let aa = {
+                 a:'aa',
+                 b:'ccc',
+                 c:{
+                     aa:'heh',
+                     bb:'nihao',
+                     cc:function(){
+                         return this.aa
+                     }
+                 }
+            }
+            let aaCopy = deepCLone(aa);
+            // console.log(aaCopy)
+            function deepCLone(obj){
+                let cloneObj =  Array.isArray(obj) ? [] : {};
+                for(let key in obj){
+                     cloneObj[key] =  typeof obj[key] === "object" ? deepCLone(obj[key]) : obj[key]
+                }
+                return cloneObj
+            }
+
+
+            function loopWork(deadline){
+                console.log('deadline=>',deadline);
+                while((deadline.timeRemaining() > 0 || deadline.didTimeout)){
+                    let aaCopy = deepCLone(aa);
+                    console.log(aaCopy)
+                }
+                
+            }
+            requestIdleCallback(loopWork, {timeout:2000});
+        </script>
+</body>
+</html>

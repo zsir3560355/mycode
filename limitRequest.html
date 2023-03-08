@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 异步并发控制方法
+      function ajaxLimit(requests, limit = 4) {
+        return new Promise((resolve, reject) => {
+          const len = requests.length;
+          const isStop = false;
+          const count = 0;
+          const errorNum = 0;
+          const start = async () => {
+            if (isStop) {
+              return;
+            }
+            const task = requests.shift();
+            if (task) {
+              try {
+                await task();
+                if (count == len - 1) {
+                  resolve();
+                } else {
+                  count++;
+                  start();
+                }
+              } catch (error) {
+                if (errorNum < 3) {
+                  errorNum++;
+                  requests.unshift(task);
+                  start();
+                } else {
+                  isStop = true;
+                  reject();
+                }
+              }
+            }
+          };
+          while (limit > 0) {
+            setTimeout(() => {
+              start();
+            }, Math.random() * 2000);
+            limit -= 1;
+          }
+        });
+      }
+
+      function limitRequest(requests, limit = 5) {
+        let len = requests.length;
+        let count = 0;
+        let isStop = false;
+        let errorNum = 0;
+        return new Promise((resolve, reject) => {
+          const start = async () => {
+            if (isStop) {
+              reject();
+            }
+            const task = requests.shift();
+            if (task) {
+              try {
+                if (count == len - 1) {
+                  resolve();
+                } else {
+                  count++;
+                  start();
+                }
+              } catch (error) {
+                if (errorNum < 3) {
+                  requests.unshift(task);
+                  errorNum++;
+                } else {
+                  isStop = true;
+                  reject();
+                }
+              }
+            }
+          };
+          while (limit > 0) {
+            start();
+            limit -= 1;
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
