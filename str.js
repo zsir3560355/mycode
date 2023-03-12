@@ -168,28 +168,7 @@ const promiseAll = (promises) => {
   });
 };
 
-const allPromise = (promises) => {
-  return new Promise((resolve, reject) => {
-    if (!Array.isArray(promises)) {
-      return reject(new Error("必须传入数组"));
-    }
-    let res = [];
-    let count = 0;
-    promises.forEach((promise, index) => {
-      Promise.resolve(promise)
-        .then((data) => {
-          res[index] = data;
-          count++;
-          if (count === promises.length) {
-            resolve(res);
-          }
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
-  });
-};
+
 /**
  * 问题6 多维度数组变成一维 flatter  5.28
  */

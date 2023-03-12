@@ -10,6 +10,10 @@
 function Parent(){
     this.name = ['aa','bb','cc'];
 }
+Parent.habit = 'singing';//静态属性
+Parent.love = function(){  //静态方法
+  console.log("make love")
+}
 Parent.prototype.getName = function(){
     console.log("name",this.name)
 }
@@ -145,22 +149,6 @@ function new_instance_of(leftValue,rightValue){
     }   
 }
 // console.log(new_instance_of(child1,Parent))
-
-
-
-function new_instance_of(leftValue,rightValue){
-    leftValue = leftValue.__proto__;
-    rightProto = rightValue.prototype;
-    while(true){
-        if(leftValue === null){
-            return false
-        }
-        if(leftValue === rightProto){
-            return true
-        }
-        leftValue = leftValue.__proto__
-    }
-}
 
 
 /**

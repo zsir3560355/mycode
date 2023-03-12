@@ -80,6 +80,21 @@
         }, []);
       }
 
+      function arrayToTree(arr,pid){
+        let ret = [];
+        transformArr(ret,arr,pid)
+        return ret
+      }
+
+      const transformArr = (ret,arr,pid)=>{
+         for(let item of arr){
+            if(item.pid === pid){
+                let obj = {...item,children:[]}
+                ret.push(obj)
+                transformArr(ret.chldren,arr,obj.id)
+            }
+         }
+      }
       let arrs = [
         { id: 1, name: "test1", pid: 0 },
         { id: 2, name: "test2", pid: 1 },
@@ -168,6 +183,7 @@
           name: "服饰",
         },
       ];
+    
       function getItemName(arr, id) {
         return arr.reduce((result, cur) => {
           if (cur.id == id) {
@@ -184,21 +200,7 @@
         }, []);
       }
 
-      function getIDValue(json, id) {
-        return json.reduce((prev, cur) => {
-          if (cur.id == id) {
-            let obj = {
-              name: cur.name || cur.gname,
-              id: cur.id,
-            };
-            prev.push(obj);
-          }
-          if (cur.goods && cur.goods.length > 0) {
-            prev.push(...getIDValue(cur.goods, id));
-          }
-          return prev;
-        }, []);
-      }
+      
       console.log(getItemName(datas, 112)); //得到服饰
     </script>
   </body>
