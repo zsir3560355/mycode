@@ -57,7 +57,7 @@ const deepClone = obj=>{
   return cloneObj
 }
 
-let newObj = JSON.parse(JSON.stringify(obj))
+// let newObj = JSON.parse(JSON.stringify(obj))
 
 const obj = {
   name :'level1',
@@ -76,7 +76,79 @@ const obj = {
  * 输出[{name:"level1/level2"},{name:"level1/level2/level3"}]
  */
 
-const outPutObj = obj=>{
-  let ret = [];
-  
+
+ const data = [
+  {
+    id: 1,
+    name: "test1",
+    pid: 1,
+    children: [
+      {
+        id: 4,
+        name: "test4",
+        pid: 4,
+        children: [
+          { id: 5, name: "test5", pid: 5 },
+          { id: 6, name: "test6", pid: 6 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "test2",
+    pid: 2,
+    children: [{ id: 21, name: "test21" }],
+  },
+  {
+    id: 3,
+    name: "test3",
+    pid: 3,
+    children: [{ id: 31, name: "test31" }],
+  },
+];
+
+// 数组拉平为一维度数组
+
+const faltterArr = datas =>{
+    return datas.reduce((result,cur)=>{
+       let obj = {
+         id:cur.id,
+         name:cur.name,
+         pid:cur.pid
+       };
+       result.push(obj)
+       if(cur?.children?.length >0){
+        result.push(...faltterArr(cur.children))
+       }
+       return result
+    },[])
 }
+console.log(faltterArr(data))
+
+let brr = [
+  { id: 1, name: "test1", pid: 0 },
+        { id: 2, name: "test2", pid: 1 },
+        { id: 3, name: "test3", pid: 1 },
+        { id: 4, name: "test4", pid: 2 },
+        { id: 5, name: "test5", pid: 2 },
+        { id: 6, name: "test6", pid: 3 },
+]
+
+const arrToTree = (arr,pid)=>{
+  let ret = [];
+   transformData(arr,ret,pid)
+  return ret
+}
+
+const transformData = (arr,ret,pid)=>{
+  for(let item of arr){
+      if(item.pid === pid){
+        let newObj = {...item,children:[]}
+        ret.push(newObj)
+        transformData(arr,newObj.children,item.id)
+      }
+  }
+}
+
+console.log(arrToTree(brr,1))
